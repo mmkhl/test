@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+import login from './modules/login.js'
+import appleas from './modules/appleas.js'
+
+
+export const store = new Vuex.Store({
   state: {
   },
   getters: {
@@ -13,5 +16,8 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
+    login,
+    appleas,
+
   }
 })

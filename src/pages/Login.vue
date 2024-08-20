@@ -5,37 +5,124 @@
       <form action="">
         <label for="login-input"> Логин или телефон </label>
         <div class="input-block">
-          <div>
-            <input type="text" id="login-input">
+          <div class="input-group">
+            <img src="../assets/call.png" alt="call" />
+            <input
+              type="phone"
+              id="login-input"
+              v-maska:unmaskedValue.unmasked="'+7 ### ### ## ##'"
+              v-model="username"
+            />
           </div>
-          <div>
-            <input :type="'password'" id="pass-input" placeholder="Пароль">
+          <div class="input-group">
+            <img src="../assets/lock.png" alt="lock" />
+            <input
+              :type="!isShow ? 'password' : 'text'"
+              id="pass-input"
+              placeholder="Пароль"
+              v-model="password"
+            />
+            <img
+              src="../assets/show.png"
+              alt="eye"
+              id="show-btn"
+              @click="isShow = !isShow"
+            />
           </div>
         </div>
-        
-        <div class="btn" @click="123">
-          Войти
+
+        <div class="btn" @click="toLogin">
+          <v-progress-circular
+            v-if="loaders.login"
+            :size="20"
+            :width="2"
+            indeterminate
+          ></v-progress-circular>
+          <p>Войти</p>
         </div>
       </form>
-
     </div>
+
+    <v-snackbar
+      v-if="respData.errorInfo"
+      v-model="respData.isError"
+      multi-line
+      color="success"
+      variant="outlined"
+      :timeout='2000'
+    >
+      <h4 class="pb-2">{{respData.errorInfo.detail}}</h4>
+
+      <p>{{respData.errorInfo.data['non_field_errors'][0]}}</p>
+    </v-snackbar>
+
+    <!-- {{respData.errorInfo}} -->
   </div>
 </template>
 
 <script>
-  export default {
-    
-  }
+import { vMaska } from "maska/vue";
+import { createNamespacedHelpers } from "vuex";
+import router from '../router'
+const { mapState, mapActions, mapMutations } = createNamespacedHelpers("login");
+
+export default {
+  directives: { maska: vMaska },
+
+  data: () => ({
+    username: "",
+    unmaskedValue: "",
+    password: "",
+
+    isShow: false,
+  }),
+
+  mounted(){
+    // this.SET_IS_AUTH(false)
+    // console.log(this.loaders);
+  },
+  computed: {
+    ...mapState([
+      'loaders',
+      'respData'
+    ]),
+ 
+
+  },
+
+  methods: {
+    ...mapActions([
+      'authUser'
+    ]),
+    ...mapMutations([
+      'SET_IS_AUTH'
+    ]),
+    async toLogin() {
+      const params = {
+        username: this.username.replace(/[ +]/gm, ''),
+        password: this.password
+      }
+      await this.authUser(params)
+
+      if ( this.respData.isAuth ){
+        router.push('/')
+      }
+    },
+  },
+};
 </script>
 
 <style lang="sass" >
-
 div.fullfill-wrapper
+  font-family: "Inter", sans-serif
+  font-optical-sizing: auto
+  font-weight: 500
+  font-style: normal
   height: 100vh
   box-sizing: border-box
 
-  background: url('../assets/background_auth.jpeg') center center no-repeat 
-  
+  background: url('../assets/background_auth.jpeg') center center no-repeat
+
   background-blend-mode: multiply
   position: relative
   display: flex
@@ -57,32 +144,41 @@ div.fullfill-wrapper
       color: #fff
       padding: 20px 40px
       margin: -30px 15px 10px 15px
-      background-color:  #44A248
+      background-color: #44A248
+
+form
+  margin-top: 30px
 
 label
   color: #50B053
-  margin-left: 30px 
+  margin-left: 25px
 
-  
-    
-input
+div.input-group
+  display: inline-flex
+  align-items: center
   width: 100%
+
+input
   height: 40px
   background-color: none
 
+input:focus-visible
+  border: none
+  outline: none
 div.input-block div
-  
-  border-bottom: 1px solid #e3e3e3
-  margin: 10px 0
 
+  border-bottom: 1px solid #cccccc
+  margin-bottom: 15px
 
-    
-.btn 
+#show-btn
+  cursor: pointer
+
+.btn
   display: flex
   justify-content: center
-
+  align-items: center
   margin: 10px auto
-  background-color:  #44A248
+  background-color: #44A248
   padding: 12px
   color: #fff
   width: 110px
@@ -91,14 +187,10 @@ div.input-block div
   border-radius: 4px
   opacity: 0px
   cursor: pointer
-  transition: all .2s linear 
+  transition: all .2s linear
 
-.btn:hover
+.btn:hover, #show-btn:hover
   opacity: .9
-  
-
-
-
 </style>
 
 
