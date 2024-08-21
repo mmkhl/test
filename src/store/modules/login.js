@@ -1,4 +1,5 @@
 import axios from 'axios'
+import VueCookies from 'vue-cookies'
 
 
 export default {
@@ -19,6 +20,8 @@ export default {
       try {
         commit('SET_LOADING_AUTH', true)
         const resp = await axios.post('https://dev.moydomonline.ru/api/auth/login/', payload)
+
+        commit('SET_TOKEN', resp.data.key)
         commit('SET_IS_AUTH', true)
         
         console.log(resp);
@@ -33,6 +36,9 @@ export default {
   mutations: {
     SET_LOADING_AUTH(state, payload){
       state.loaders.login = payload
+    },
+    SET_TOKEN(state, payload){
+      VueCookies.set('token', payload)
     },
     SET_ERROR_LOGIN(state, payload){
       state.respData.isError = payload

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueCoockies from 'vue-cookies'
 import VueRouter from 'vue-router'
 import Login from '../pages/Login.vue'
 
@@ -12,11 +13,11 @@ const routes = [
   },
   {
     path: '/',
-    name: 'appleas',
+    name: 'appeals',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../pages/Appleas.vue')
+    // which is lazy-loaded when the route is visited.../pages/Appeals.vue
+    component: () => import(/* webpackChunkName: "about" */ '../pages/Appeals.vue')
   }
 ]
 
@@ -28,8 +29,13 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('isAuthUser')
-  if (to.name !== 'login' && !isAuthenticated) next({ name: 'login' })
-  else next()
+  if (to.name !== 'login' && !isAuthenticated){
+    next({ name: 'login' })
+  } else{
+    const token = VueCoockies.get('token')
+
+    next()
+  } 
 })
 
 export default router

@@ -38,7 +38,7 @@
             :width="2"
             indeterminate
           ></v-progress-circular>
-          <p>Войти</p>
+          Войти
         </div>
       </form>
     </div>
@@ -47,7 +47,7 @@
       v-if="respData.errorInfo"
       v-model="respData.isError"
       multi-line
-      color="success"
+      color="red"
       variant="outlined"
       :timeout='2000'
     >
@@ -114,16 +114,10 @@ export default {
 
 <style lang="sass" >
 div.fullfill-wrapper
-  font-family: "Inter", sans-serif
-  font-optical-sizing: auto
-  font-weight: 500
-  font-style: normal
   height: 100vh
   box-sizing: border-box
-
-  background: url('../assets/background_auth.jpeg') center center no-repeat
-
-  background-blend-mode: multiply
+  background: url('../assets/background_auth.jpeg') center center no-repeat 
+  background-size: cover
   position: relative
   display: flex
   align-items: center
@@ -160,6 +154,9 @@ div.input-group
 
 input
   height: 40px
+  width: auto
+  padding: 0 10px
+  flex-grow: 1
   background-color: none
 
 input:focus-visible
